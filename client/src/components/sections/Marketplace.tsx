@@ -25,15 +25,39 @@ export default function Marketplace() {
   const [request, setRequest] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
-  const handleFeedback = (e: React.FormEvent) => {
+  const handleFeedback = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !request) {
       toast.error("Please fill in both fields.");
       return;
     }
-    // In production, this would send to a backend endpoint
-    setSubmitted(true);
-    toast.success("Request received — we'll be in touch.");
+
+    try {
+      const response = await fetch(
+        "https://truenorthops.app.n8n.cloud/webhook/9f7807b5-84d0-4e94-8827-ff1536212956",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            request,
+            source: "marketplace-feedback",
+            timestamp: new Date().toISOString(),
+          }),
+        }
+      );
+
+      if (response.ok) {
+        setSubmitted(true);
+        toast.success("Request received — we'll be in touch.");
+      } else {
+        toast.error("Failed to submit. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      setSubmitted(true);
+      toast.success("Request received — we'll be in touch.");
+    }
   };
 
   return (

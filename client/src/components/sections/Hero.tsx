@@ -191,22 +191,22 @@ export default function Hero() {
           <div className="flex flex-wrap gap-4 mb-16">
             <button
               onClick={() => {
-                const el = document.querySelector("#contact");
+                const el = document.querySelector("#audit");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
               className="btn-primary-tn flex items-center gap-2 group"
             >
-              Book a Discovery Call
+              Take the Free Audit
               <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
             </button>
             <button
               onClick={() => {
-                const el = document.querySelector("#marketplace");
+                const el = document.querySelector("#contact");
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }}
               className="btn-outline-tn flex items-center gap-2"
             >
-              Explore Our Solutions
+              Book a Discovery Call
             </button>
           </div>
 
