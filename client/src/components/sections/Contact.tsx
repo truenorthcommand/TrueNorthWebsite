@@ -45,7 +45,7 @@ export default function Contact() {
         <div className="text-center mb-16 animate-on-scroll">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-            <span className="section-label">06 — Get In Touch</span>
+            <span className="section-label">07 — Get In Touch</span>
             <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
           </div>
           <h2

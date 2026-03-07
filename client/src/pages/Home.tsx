@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
 import Portfolio from "@/components/sections/Portfolio";
 import Marketplace from "@/components/sections/Marketplace";
+import AuditTool from "@/components/sections/AuditTool";
 import Services from "@/components/sections/Services";
 import Process from "@/components/sections/Process";
 import About from "@/components/sections/About";
@@ -36,6 +37,7 @@ export default function Home() {
         <Hero />
         <Portfolio />
         <Marketplace />
+        <AuditTool />
         <Services />
         <Process />
         <About />

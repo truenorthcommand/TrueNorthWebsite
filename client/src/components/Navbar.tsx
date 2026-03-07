@@ -14,6 +14,7 @@ export default function Navbar() {
   const links = [
     { label: "What We've Built", href: "#portfolio" },
     { label: "Marketplace", href: "#marketplace" },
+    { label: "Free Audit", href: "#audit" },
     { label: "Services", href: "#services" },
     { label: "How We Work", href: "#process" },
     { label: "About", href: "#about" },

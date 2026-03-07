@@ -61,7 +61,7 @@ export default function Process() {
         <div className="mb-16 animate-on-scroll">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-            <span className="section-label">04 — How We Work</span>
+            <span className="section-label">05 — How We Work</span>
           </div>
           <h2
             className="font-display font-bold mb-4"

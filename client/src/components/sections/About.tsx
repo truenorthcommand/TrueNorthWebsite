@@ -19,7 +19,7 @@ export default function About() {
           <div className="animate-on-scroll">
             <div className="flex items-center gap-3 mb-4">
               <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-              <span className="section-label">05 — About</span>
+              <span className="section-label">06 — About</span>
             </div>
             <h2
               className="font-display font-bold mb-6"

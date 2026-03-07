@@ -92,7 +92,7 @@ export default function Services() {
         <div className="mb-16 animate-on-scroll">
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-            <span className="section-label">03 — What We Can Build For You</span>
+            <span className="section-label">04 — What We Can Build For You</span>
           </div>
           <h2
             className="font-display font-bold mb-4"
