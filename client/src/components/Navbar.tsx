@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [, navigate] = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -18,10 +20,15 @@ export default function Navbar() {
     { label: "Services", href: "#services" },
     { label: "How We Work", href: "#process" },
     { label: "About", href: "#about" },
+    { label: "Blog", href: "/blog", isPage: true },
   ];
 
-  const scrollTo = (href: string) => {
+  const scrollTo = (href: string, isPage?: boolean) => {
     setMobileOpen(false);
+    if (isPage) {
+      navigate(href);
+      return;
+    }
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -70,9 +77,9 @@ export default function Navbar() {
             {links.map((link) => (
               <button
                 key={link.href}
-                onClick={() => scrollTo(link.href)}
+                onClick={() => scrollTo(link.href, link.isPage)}
                 className="text-sm font-medium transition-colors duration-200 relative group"
-                style={{ color: "oklch(0.70 0.02 220)", fontFamily: "'DM Sans', sans-serif" }}
+                style={{ color: link.isPage ? "oklch(0.65 0.12 192)" : "oklch(0.70 0.02 220)", fontFamily: "'DM Sans', sans-serif" }}
               >
                 {link.label}
                 <span
@@ -118,7 +125,7 @@ export default function Navbar() {
             {links.map((link) => (
               <button
                 key={link.href}
-                onClick={() => scrollTo(link.href)}
+                onClick={() => scrollTo(link.href, link.isPage)}
                 className="text-left py-3 px-2 text-sm font-medium border-b transition-colors duration-200"
                 style={{
                   color: "oklch(0.70 0.02 220)",

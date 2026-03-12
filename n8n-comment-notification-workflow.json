@@ -1,0 +1,118 @@
+{
+  "name": "TrueNorth — Blog Comment Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "blog-comment-notification",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "blog-comment-notification"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ received: true }) }}",
+        "options": {}
+      },
+      "id": "respond-immediately",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [460, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-content",
+              "leftValue": "={{ $json.body.content }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-valid",
+      "name": "Has Content?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 380]
+    },
+    {
+      "parameters": {
+        "sendTo": "matt@truenorthoperationsgroup.com",
+        "subject": "=New Blog Comment — Pending Moderation",
+        "emailType": "html",
+        "message": "=<h2>New Comment Pending Moderation</h2>\n<table style=\"border-collapse:collapse;width:100%;font-family:sans-serif;\">\n  <tr><td style=\"padding:8px;font-weight:bold;background:#f5f5f5;\">From</td><td style=\"padding:8px;\">{{ $json.body.authorName }} ({{ $json.body.authorEmail }})</td></tr>\n  <tr><td style=\"padding:8px;font-weight:bold;background:#f5f5f5;\">Post ID</td><td style=\"padding:8px;\">#{{ $json.body.postId }}</td></tr>\n  <tr><td style=\"padding:8px;font-weight:bold;background:#f5f5f5;\">Comment</td><td style=\"padding:8px;\">{{ $json.body.content }}</td></tr>\n  <tr><td style=\"padding:8px;font-weight:bold;background:#f5f5f5;\">Status</td><td style=\"padding:8px;\">{{ $json.body.status }}</td></tr>\n</table>\n<br>\n<p><a href=\"https://truenorth-9kqqqxdq.manus.space/admin/blog\" style=\"background:#0d9488;color:white;padding:10px 20px;text-decoration:none;border-radius:4px;\">Review in Admin Dashboard</a></p>",
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [680, 300],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1",
+          "name": "TrueNorth Gmail"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Has Content?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Content?": {
+      "main": [
+        [
+          {
+            "node": "Send Email Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-12T00:00:00.000Z",
+  "versionId": "1"
+}

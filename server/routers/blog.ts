@@ -16,6 +16,29 @@ import {
   deleteBlogPost,
 } from "../db-blog";
 
+const OWNER_EMAIL = "matt@truenorthoperationsgroup.com";
+
+async function triggerCommentWebhook(data: {
+  commentId: number;
+  postId: number;
+  authorName: string;
+  authorEmail: string;
+  content: string;
+  status: string;
+}) {
+  const webhookUrl = process.env.N8N_COMMENT_WEBHOOK_URL;
+  if (!webhookUrl) return;
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  } catch (err) {
+    console.error("[n8n webhook] Failed to notify:", err);
+  }
+}
+
 export const blogRouter = router({
   // Public procedures
   list: publicProcedure
@@ -57,13 +80,34 @@ export const blogRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      // TODO: Add abuse filtering here before creating comment
-      return createComment(input);
+      // Auto-approve comments from the owner
+      const isOwner = input.authorEmail.toLowerCase() === OWNER_EMAIL.toLowerCase();
+      const result = await createComment({ ...input, status: isOwner ? "approved" : "pending" });
+      const commentId = (result as any).insertId || 0;
+      // Trigger n8n notification for non-owner comments
+      if (!isOwner) {
+        await triggerCommentWebhook({
+          commentId,
+          postId: input.postId,
+          authorName: input.authorName,
+          authorEmail: input.authorEmail,
+          content: input.content,
+          status: "pending",
+        });
+      }
+      return { success: true, autoApproved: isOwner };
     }),
+
 
   // Admin procedures
   adminList: protectedProcedure
-    .input(z.object({ category: z.string().optional() }))
+    .input(
+      z.object({
+        category: z.string().optional(),
+        page: z.number().int().positive().optional(),
+        limit: z.number().int().min(1).max(100).optional(),
+      })
+    )
     .query(async ({ ctx, input }) => {
       if (ctx.user?.role !== "admin") {
         throw new Error("Unauthorized");

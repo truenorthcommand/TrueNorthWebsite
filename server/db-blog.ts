@@ -117,13 +117,17 @@ export async function createComment(comment: {
   authorName: string;
   authorEmail: string;
   content: string;
+  status?: "pending" | "approved" | "rejected";
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
   const result = await db.insert(blogComments).values({
-    ...comment,
-    status: "pending",
+    postId: comment.postId,
+    authorName: comment.authorName,
+    authorEmail: comment.authorEmail,
+    content: comment.content,
+    status: comment.status ?? "pending",
   });
 
   return result;
