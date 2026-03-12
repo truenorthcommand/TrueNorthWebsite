@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/sections/Hero";
 import Portfolio from "@/components/sections/Portfolio";
@@ -11,6 +12,10 @@ import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
+  // The userAuth hooks provides authentication state
+  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
+  let { user, loading, error, isAuthenticated, logout } = useAuth();
+
   // Initialize scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
