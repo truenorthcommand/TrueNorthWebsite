@@ -18,6 +18,8 @@ import {
 
 const OWNER_EMAIL = "matt@truenorthoperationsgroup.com";
 
+const N8N_WEBHOOK_URL = "https://truenorthops.app.n8n.cloud/webhook/blog-comment-notification";
+
 async function triggerCommentWebhook(data: {
   commentId: number;
   postId: number;
@@ -26,8 +28,10 @@ async function triggerCommentWebhook(data: {
   content: string;
   status: string;
 }) {
-  const webhookUrl = process.env.N8N_COMMENT_WEBHOOK_URL;
-  if (!webhookUrl) return;
+  // Use env var if valid, otherwise fall back to hardcoded URL
+  const envUrl = process.env.N8N_COMMENT_WEBHOOK_URL;
+  const webhookUrl = (envUrl && envUrl.startsWith("http")) ? envUrl : N8N_WEBHOOK_URL;
+  console.log("[n8n webhook] Firing to:", webhookUrl.substring(0, 50));
   try {
     await fetch(webhookUrl, {
       method: "POST",
