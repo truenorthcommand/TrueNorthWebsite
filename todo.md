@@ -67,3 +67,4 @@
 - [ ] Add real case study to Portfolio (specific client outcome + numbers)
 - [ ] Connect Gmail credentials in n8n comment notification workflow
 - [ ] Set up custom domain (truenorthoperationsgroup.com)
+- [ ] Update navbar with new electric compass logo (transparent background, responsive sizing)

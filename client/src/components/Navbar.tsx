@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
 
-const LOGO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663393225838/9KQqQxdqfnwRs33nEN8mWe/truenorth-logo_c008cd1a.png";
+const LOGO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663393225838/9KQqQxdqfnwRs33nEN8mWe/truenorth-logo-transparent_04e70ea6.png";
 
 const links = [
   { label: "What We've Built", href: "#portfolio" },
@@ -42,7 +42,7 @@ export default function Navbar() {
       }}
     >
       <div className="container">
-        <div className="flex items-center justify-between h-16 md:h-20">
+        <div className="flex items-center justify-between h-20 md:h-24">
 
           {/* Logo */}
           <a
@@ -53,8 +53,11 @@ export default function Navbar() {
             <img
               src={LOGO}
               alt="TrueNorth Operations Group"
-              className="h-10 w-auto"
-              style={{ filter: "drop-shadow(0 0 8px rgba(0,255,255,0.2))" }}
+              className="h-16 md:h-20 w-auto object-contain"
+              style={{
+                filter: "drop-shadow(0 0 12px rgba(0,255,255,0.3))",
+                maxWidth: "260px",
+              }}
             />
           </a>
 
