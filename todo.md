@@ -30,13 +30,14 @@
 - [x] n8n comment notification workflow (ID: 7nBjxnduTYP6XTJb)
 - [x] N8N_COMMENT_WEBHOOK_URL env var wired to backend
 
-## Intro Splash Screen (March 2026)
+## Intro Splash Screen (March 2026) — REMOVED
 - [x] Upload logo animation video to CDN
 - [x] Create IntroSplash component with video player and skip button
 - [x] Add routing logic to show splash on first visit only (localStorage tracking)
 - [x] Test intro splash on first visit and verify skip functionality
 - [x] Auto-redirect to homepage after video completes
 - [x] Fix video autoplay by adding muted attribute (browser autoplay policy)
+- [x] Remove IntroSplash component from App.tsx (not working on published site)
 
 ## Pending / Future
 - [ ] Rich text editor (TipTap) for post content in admin dashboard
