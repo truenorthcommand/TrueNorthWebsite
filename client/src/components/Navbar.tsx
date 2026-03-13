@@ -50,26 +50,9 @@ export default function Navbar() {
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2 group shrink-0"
           >
-            <div className="relative w-8 h-8">
-              <div
-                className="absolute inset-0 rounded-sm"
-                style={{
-                  background: "linear-gradient(135deg, oklch(0.65 0.12 192), oklch(0.55 0.14 200))",
-                }}
-              />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                  <path d="M12 3L20 8V16L12 21L4 16V8L12 3Z" stroke="oklch(0.12 0.04 240)" strokeWidth="2" fill="none"/>
-                  <path d="M12 3V21M4 8L20 16M20 8L4 16" stroke="oklch(0.12 0.04 240)" strokeWidth="1.5" opacity="0.6"/>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <span className="font-display font-700 text-sm tracking-wide text-white">TrueNorth</span>
-              <span className="font-display font-300 text-sm tracking-wide" style={{ color: "oklch(0.65 0.12 192)" }}> Operations Group</span>
-            </div>
+            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663393225838/9KQqQxdqfnwRs33nEN8mWe/truenorth-logo_94cc552d.png" alt="TrueNorth Operations Group" className="h-12 w-auto" />
           </a>
 
           {/* Desktop Nav */}

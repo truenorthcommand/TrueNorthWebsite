@@ -49,3 +49,4 @@
 - [x] Add paid Discovery Call callout in Services section (From £150)
 - [x] Update Portfolio badges to From pricing
 - [ ] 8-week pricing review (due ~May 2026)
+- [x] Replace inline SVG logo with extracted TrueNorth compass logo (white text, cyan #00FFFF)
