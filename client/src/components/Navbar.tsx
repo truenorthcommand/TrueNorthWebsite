@@ -48,17 +48,40 @@ export default function Navbar() {
           <a
             href="#"
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-            className="shrink-0"
+            className="shrink-0 flex items-center gap-3"
           >
-            <img
-              src={LOGO}
-              alt="TrueNorth Operations Group"
-              className="h-16 md:h-20 w-auto object-contain"
+            {/* Compass icon — square crop of the centre of the image */}
+            <div
               style={{
-                filter: "drop-shadow(0 0 12px rgba(0,255,255,0.3))",
-                maxWidth: "260px",
+                width: 52,
+                height: 52,
+                flexShrink: 0,
+                borderRadius: 8,
+                overflow: "hidden",
+                filter: "drop-shadow(0 0 10px rgba(0,255,255,0.4))",
               }}
-            />
+            >
+              <img
+                src={LOGO}
+                alt="TrueNorth compass"
+                style={{
+                  width: 200,
+                  height: 200,
+                  marginTop: -74,
+                  marginLeft: -74,
+                  objectFit: "none",
+                }}
+              />
+            </div>
+            {/* Wordmark */}
+            <div className="hidden sm:flex flex-col leading-tight">
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 17, color: "#ffffff", letterSpacing: "-0.02em", lineHeight: 1.1 }}>
+                TrueNorth
+              </span>
+              <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 500, fontSize: 13, color: "#00FFFF", letterSpacing: "0.04em", lineHeight: 1.2 }}>
+                Operations Group
+              </span>
+            </div>
           </a>
 
           {/* Desktop Nav */}
