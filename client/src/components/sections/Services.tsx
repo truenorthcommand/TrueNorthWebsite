@@ -1,78 +1,72 @@
-import { ArrowRight, Bot, Cpu, Layers, Zap, Users, GraduationCap } from "lucide-react";
+import { ArrowRight, Bot, Cpu, Layers, Zap, Users } from "lucide-react";
 
 const services = [
   {
-    icon: Bot,
-    label: "AI Assistants",
-    name: "Personal & Executive Assistants",
+    icon: Zap,
+    label: "Tier 1 — Ops Starter",
+    name: "Single Workflow Automation",
     description:
-      "Bespoke AI assistants built to your exact workflow. Calendar management, communication drafting, task prioritisation, and intelligent briefings — all configured to your individual requirements.",
-    pricing: "Build: £1,500–£5,000 · Monthly: £150–£500",
+      "Your first automation, live in 7 days. One workflow built, configured, and handed over — with a 30-day support window and a Loom walkthrough. The fastest way to eliminate one manual process and see what's possible.",
+    pricing: "From £497 setup · From £197/mo maintenance",
+    cta: "Get Started",
+    accent: "cyan",
+  },
+  {
+    icon: Layers,
+    label: "Tier 2 — Systems Integration",
+    name: "Multi-System Automation",
+    description:
+      "Connect your CRM, comms, and ops stack. We design and deploy 3–5 intelligent automations across your existing tools, with SOP documentation and a 60-day optimisation window. Stop the manual work for good.",
+    pricing: "From £1,500 setup · From £750/mo retainer",
+    cta: "Enquire Now",
+    accent: "cyan",
+  },
+  {
+    icon: Bot,
+    label: "Tier 3 — AI Agent Deployment",
+    name: "Custom AI Agents",
+    description:
+      "Custom AI agents that handle triage, routing, drafting, and reporting autonomously. Integrated with your existing stack, fully documented, and maintained on an ongoing retainer. Scoped per engagement.",
+    pricing: "From £3,500 setup · From £1,500/mo retainer",
     cta: "Enquire Now",
     accent: "amber",
   },
   {
     icon: Cpu,
-    label: "Enterprise Systems",
-    name: "Bespoke Operating Systems",
+    label: "Tier 4 — Managed Ops Partner",
+    name: "Fractional Ops Leadership",
     description:
-      "Full-scale operational platforms integrating ERP, CRM, AI agents, SOPs, and automated workflows. A single source of truth for your entire organisation — built to specification, operational from day one.",
-    pricing: "Custom pricing on enquiry",
+      "Full operating system design, build, and handover — with ongoing management of all automations and AI agents. We own the system. You own the outcomes. Priority support and quarterly business reviews included.",
+    pricing: "From £5,000 setup · From £2,500/mo retainer",
     cta: "Enquire Now",
     accent: "amber",
   },
   {
-    icon: Layers,
-    label: "Automation",
-    name: "Workflow Automation",
-    description:
-      "Eliminate manual processes and data silos. We design and deploy intelligent automations that connect your existing tools, reduce operational drag, and free your team for high-value work.",
-    pricing: "From £500 · Monthly from £100",
-    cta: "Enquire Now",
-    accent: "cyan",
-  },
-  {
-    icon: Zap,
-    label: "One-Off Builds",
-    name: "Bespoke App Development",
-    description:
-      "Need a very specific solution? We build one-off applications tailored to your exact problem — from a custom quoting tool to a client-facing portal. Scoped, built, and delivered.",
-    pricing: "From £250 · Fixed price",
-    cta: "Enquire Now",
-    accent: "cyan",
-  },
-  {
     icon: Users,
-    label: "SMB & Solopreneur",
+    label: "Solopreneur & SMB",
     name: "Business Systems for Growth",
     description:
-      "Scalable operational systems for small businesses and solopreneurs. CRM setup, automated client onboarding, reporting dashboards, and AI-assisted communications — all without enterprise complexity.",
-    pricing: "From £99 · Monthly from £49",
+      "Scalable operational systems for solopreneurs and small businesses. CRM setup, automated client onboarding, reporting dashboards, and AI-assisted communications — without enterprise complexity.",
+    pricing: "From £497 · Monthly from £197",
     cta: "Enquire Now",
     accent: "cyan",
   },
   {
-    icon: GraduationCap,
-    label: "Students & Individuals",
-    name: "Personal Productivity Systems",
+    icon: Bot,
+    label: "Personal & Executive Assistants",
+    name: "Bespoke AI Assistants",
     description:
-      "AI-powered tools for students, job seekers, and individuals. CV builders, study assistants, productivity apps, and personal organisation systems — built to help you achieve more, faster.",
-    pricing: "From £10/month",
-    cta: "Explore Marketplace",
-    accent: "cyan",
-    marketplaceLink: true,
+      "Bespoke AI assistants built to your exact workflow. Calendar management, communication drafting, task prioritisation, and intelligent briefings — all configured to your individual requirements.",
+    pricing: "From £1,500 setup · From £150/mo",
+    cta: "Enquire Now",
+    accent: "amber",
   },
 ];
 
 export default function Services() {
-  const handleCta = (service: typeof services[0]) => {
-    if (service.marketplaceLink) {
-      const el = document.querySelector("#marketplace");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    } else {
-      const el = document.querySelector("#contact");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+  const handleCta = () => {
+    const el = document.querySelector("#contact");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -102,14 +96,14 @@ export default function Services() {
               letterSpacing: "-0.02em",
             }}
           >
-            From £10 a Month to{" "}
-            <span className="gradient-text-cyan">Enterprise Scale.</span>
+            From First Automation to{" "}
+            <span className="gradient-text-cyan">Full Operating System.</span>
           </h2>
           <p
             className="max-w-2xl"
             style={{ color: "oklch(0.65 0.03 220)", fontSize: "1.05rem", lineHeight: "1.7" }}
           >
-            TrueNorth builds for everyone. Whether you need a personal productivity tool or a full operational system for 40 staff — the complexity is ours, the results are yours.
+            Six engagement tiers — from a standalone automation to a fully managed AI operating system. Every tier is outcome-defined from day one.
           </p>
         </div>
 
@@ -170,7 +164,7 @@ export default function Services() {
 
                 {/* CTA */}
                 <button
-                  onClick={() => handleCta(service)}
+                  onClick={handleCta}
                   className={`${service.accent === "amber" ? "btn-amber-tn" : "btn-outline-tn"} flex items-center gap-2 group text-sm`}
                 >
                   {service.cta}
@@ -179,6 +173,53 @@ export default function Services() {
               </div>
             );
           })}
+        </div>
+
+        {/* Discovery call callout */}
+        <div
+          className="mt-12 p-8 rounded-2xl animate-on-scroll"
+          style={{
+            background: "oklch(0.17 0.05 240)",
+            border: "1px solid oklch(0.75 0.16 75 / 20%)",
+            boxShadow: "0 4px 32px oklch(0.75 0.16 75 / 8%)",
+          }}
+        >
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-px w-8" style={{ background: "oklch(0.75 0.16 75)" }} />
+                <span className="section-label" style={{ color: "oklch(0.75 0.16 75)" }}>Paid Discovery Call</span>
+              </div>
+              <h3
+                className="font-display font-bold mb-2"
+                style={{ fontSize: "1.35rem", color: "oklch(0.92 0.01 220)" }}
+              >
+                Not sure which tier is right for you?
+              </h3>
+              <p style={{ color: "oklch(0.65 0.03 220)", fontSize: "0.92rem", maxWidth: "520px", lineHeight: "1.6" }}>
+                Book a 60-minute strategy session. We'll map your current operations, identify the highest-leverage automation opportunities, and deliver a scoped proposal within 5 working days. Credited against your first engagement if you proceed.
+              </p>
+            </div>
+            <div className="flex flex-col items-start md:items-end gap-3 shrink-0">
+              <div
+                className="font-mono-tn text-sm px-4 py-2 rounded-lg"
+                style={{
+                  background: "oklch(0.75 0.16 75 / 10%)",
+                  color: "oklch(0.80 0.18 75)",
+                  border: "1px solid oklch(0.75 0.16 75 / 25%)",
+                }}
+              >
+                From £150 · Credited on engagement
+              </div>
+              <button
+                onClick={handleCta}
+                className="btn-amber-tn flex items-center gap-2 group"
+              >
+                Book a Discovery Call
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

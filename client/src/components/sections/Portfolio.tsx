@@ -13,7 +13,7 @@ const projects = [
     outcomes: ["Full operational visibility", "Automated reporting & briefings", "Scalable to any team size"],
     cta: "Enquire About TrueNorthOS",
     ctaType: "amber",
-    badge: "Bespoke · Custom Pricing",
+    badge: "From £5,000 setup · From £2,500/mo",
     accent: "amber",
   },
   {
@@ -26,7 +26,7 @@ const projects = [
     outcomes: ["Built to exact specification", "Fully integrated with existing tools", "Expandable as requirements evolve"],
     cta: "Enquire About a Custom PA/EA",
     ctaType: "amber",
-    badge: "Build: £1,500–£5,000 · Monthly: £150–£500",
+    badge: "From £1,500 setup · From £150/mo",
     accent: "cyan",
   },
 ];

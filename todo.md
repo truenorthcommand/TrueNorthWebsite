@@ -37,3 +37,15 @@
 - [ ] Comment abuse filtering (profanity/discriminatory content check)
 - [ ] Blog section link in homepage footer
 - [ ] Admin dashboard link in navbar (for logged-in admin users)
+
+## Hybrid Redesign (March 2026)
+- [x] Upload AI-generated 3D icons to CDN (Blue/Gold/Teal)
+- [x] Replace hero with three glossy gradient cards (Blue/Gold/Teal)
+- [x] Keep particle network background from original
+- [x] Update hero scrolling words to B2B + Solopreneur list (Founders/Operators/Scale-ups/Solopreneurs/Growth)
+- [x] Update stats bar — From £497 entry (was £10/mo)
+- [x] Remove £10/mo Students tier from Services
+- [x] Update all service pricing to From pricing model
+- [x] Add paid Discovery Call callout in Services section (From £150)
+- [x] Update Portfolio badges to From pricing
+- [ ] 8-week pricing review (due ~May 2026)
