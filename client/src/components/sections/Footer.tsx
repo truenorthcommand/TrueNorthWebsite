@@ -46,7 +46,10 @@ export default function Footer() {
         </div>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           <p className="text-xs" style={{ color: "rgba(240,244,248,0.3)" }}>© 2026 TrueNorth Operations Group. All rights reserved.</p>
-          <p className="text-xs" style={{ color: "rgba(240,244,248,0.3)" }}>Powered by TrueNorthOS</p>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-md" style={{ background: "rgba(0,255,255,0.08)", border: "1px solid rgba(0,255,255,0.2)" }}>
+            <span className="text-xs font-medium" style={{ color: "#00FFFF" }}>⚡</span>
+            <p className="text-xs font-semibold" style={{ color: "#00FFFF" }}>Powered by TrueNorthOS</p>
+          </div>
         </div>
       </div>
     </footer>

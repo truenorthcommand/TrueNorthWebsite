@@ -73,6 +73,7 @@
 - [ ] Add CTA click tracking for 8-week pricing review (due ~May 2026)
 - [ ] Add real case study to Portfolio (specific client outcome + numbers)
 - [ ] Connect Gmail credentials in n8n comment notification workflow
-- [ ] Set up custom domain (truenorthoperationsgroup.com)
-- [ ] Update navbar with new electric compass logo (transparent background, responsive sizing)
-- [ ] Increase navbar logo size by 50%, expand navbar height to match, verify responsive
+- [x] Update navbar with new electric compass logo (transparent background, responsive sizing)
+- [x] Increase navbar logo size by 50%, expand navbar height to match, verify responsive
+- [x] Enhance "Powered by TrueNorthOS" footer branding with cyan badge and lightning icon
+- [ ] Set up custom domain (truenorthoperationsgroup.com) — DNS update pending at Squarespace
