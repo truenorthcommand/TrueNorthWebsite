@@ -79,3 +79,14 @@
 - [x] Increase navbar logo size by 50%, expand navbar height to match, verify responsive
 - [x] Enhance "Powered by TrueNorthOS" footer branding with cyan badge and lightning icon
 - [ ] Set up custom domain (truenorthoperationsgroup.com) — DNS update pending at Squarespace
+
+## Automated Audit Results Email (March 2026)
+- [x] Build audit scoring engine (0–10 maturity score, 5 tiers)
+- [x] Build personalised findings engine (5 areas, urgency ratings)
+- [x] Build personalised recommendations engine (up to 3 targeted recs)
+- [x] Build HTML email template (score ring, findings, recommendations, CTA)
+- [x] Build plain-text fallback email
+- [x] Install Resend SDK and wire RESEND_API_KEY secret
+- [x] Verify sending domain: noreply.truenorthoperationsgroup.com (Squarespace DNS)
+- [x] Wire email sending into audit.submit tRPC procedure (non-blocking)
+- [x] Live test confirmed: email delivered to mattcottam35@gmail.com

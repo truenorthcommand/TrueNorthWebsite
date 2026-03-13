@@ -3,6 +3,44 @@ import { publicProcedure, router } from "../_core/trpc";
 import { getDb } from "../db";
 import { contactSubmissions, auditSubmissions } from "../../drizzle/schema";
 import { notifyOwner } from "../_core/notification";
+import { generateAuditReport } from "../auditEngine";
+import { buildAuditEmailHtml, buildAuditEmailText } from "../auditEmailTemplate";
+import { ENV } from "../_core/env";
+import { Resend } from "resend";
+
+// Verified sending domain: noreply.truenorthoperationsgroup.com
+const FROM_EMAIL = "TrueNorth Operations Group <noreply@noreply.truenorthoperationsgroup.com>";
+
+async function sendAuditResultsEmail(
+  name: string,
+  email: string,
+  answers: Record<string, string>
+): Promise<void> {
+  if (!ENV.resendApiKey) {
+    console.warn("[Audit Email] RESEND_API_KEY not set — skipping email send.");
+    return;
+  }
+
+  const report = generateAuditReport(answers);
+  const html = buildAuditEmailHtml(name, report);
+  const text = buildAuditEmailText(name, report);
+
+  const resend = new Resend(ENV.resendApiKey);
+
+  const { error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: `Your TrueNorth Operational Audit Report — Score: ${report.score.total}/10`,
+    html,
+    text,
+  });
+
+  if (error) {
+    console.error("[Audit Email] Failed to send audit results email:", error);
+  } else {
+    console.log(`[Audit Email] Audit results sent to ${email}`);
+  }
+}
 
 export const contactRouter = router({
   submit: publicProcedure
@@ -51,9 +89,15 @@ export const auditRouter = router({
         .map(([k, v]) => `**${k}:** ${v}`)
         .join("\n");
 
+      // Notify owner
       await notifyOwner({
         title: `New free audit submission from ${input.name}`,
         content: `**Name:** ${input.name}\n**Email:** ${input.email}\n\n**Answers:**\n${answersText}`,
+      });
+
+      // Send personalised audit results email to the user (non-blocking)
+      sendAuditResultsEmail(input.name, input.email, input.answers).catch((err) => {
+        console.error("[Audit Email] Unhandled error:", err);
       });
 
       return { success: true };
