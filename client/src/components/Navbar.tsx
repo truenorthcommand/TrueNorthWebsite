@@ -42,7 +42,7 @@ export default function Navbar() {
       }}
     >
       <div className="container">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <div className="flex items-center justify-between h-28 md:h-32">
 
           {/* Logo */}
           <a
@@ -53,10 +53,10 @@ export default function Navbar() {
             <img
               src={LOGO}
               alt="TrueNorth Operations Group"
-              className="h-16 md:h-20 w-auto object-contain"
+              className="h-24 md:h-28 w-auto object-contain"
               style={{
-                filter: "drop-shadow(0 0 12px rgba(0,255,255,0.3))",
-                maxWidth: "260px",
+                filter: "drop-shadow(0 0 16px rgba(0,255,255,0.4))",
+                maxWidth: "390px",
               }}
             />
           </a>
