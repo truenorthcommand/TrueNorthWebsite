@@ -15,6 +15,13 @@
       "when": 1773346701049,
       "tag": "0001_amusing_agent_zero",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1773425450867,
+      "tag": "0002_simple_thunderball",
+      "breakpoints": true
     }
   ]
 }

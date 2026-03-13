@@ -1,223 +1,141 @@
 import { useState } from "react";
-import { useParams, useLocation } from "wouter";
+import { useRoute, Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, ArrowLeft, MessageCircle } from "lucide-react";
-import { format } from "date-fns";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/sections/Footer";
+import ParticleCanvas from "@/components/ParticleCanvas";
+import { Calendar, Eye, Tag, ArrowLeft, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export default function BlogPost() {
-  const { slug } = useParams<{ slug: string }>();
-  const [, navigate] = useLocation();
-  const [commentForm, setCommentForm] = useState({
-    authorName: "",
-    authorEmail: "",
-    content: "",
-  });
-  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [, params] = useRoute("/blog/:slug");
+  const slug = params?.slug || "";
 
-  const { data: post, isLoading: postLoading } = trpc.blog.getBySlug.useQuery(
-    { slug: slug || "" },
-    { enabled: !!slug }
-  );
-
-  const { data: comments = [], refetch: refetchComments } = trpc.blog.getComments.useQuery(
-    { postId: post?.id || 0 },
+  const { data: post, isLoading } = trpc.blog.getBySlug.useQuery({ slug }, { enabled: !!slug });
+  const { data: comments, refetch: refetchComments } = trpc.blog.getComments.useQuery(
+    { postId: post?.id ?? 0 },
     { enabled: !!post?.id }
   );
 
-  const submitCommentMutation = trpc.blog.submitComment.useMutation({
-    onSuccess: () => {
-      setCommentForm({ authorName: "", authorEmail: "", content: "" });
-      toast.success("Comment submitted! It will appear after moderation.");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [content, setContent] = useState("");
+
+  const submitComment = trpc.blog.submitComment.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.autoApproved ? "Comment posted." : "Comment submitted for review.");
+      setName(""); setEmail(""); setContent("");
       refetchComments();
     },
-    onError: (error) => {
-      toast.error(error.message || "Failed to submit comment");
-    },
+    onError: () => toast.error("Failed to submit comment. Please try again."),
   });
 
-  const handleCommentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!post) return;
-
-    if (!commentForm.authorName.trim()) {
-      toast.error("Please enter your name");
-      return;
-    }
-    if (!commentForm.authorEmail.trim()) {
-      toast.error("Please enter your email");
-      return;
-    }
-    if (!commentForm.content.trim()) {
-      toast.error("Please enter a comment");
-      return;
-    }
-
-    setIsSubmittingComment(true);
-    try {
-      await submitCommentMutation.mutateAsync({
-        postId: post.id,
-        authorName: commentForm.authorName,
-        authorEmail: commentForm.authorEmail,
-        content: commentForm.content,
-      });
-    } finally {
-      setIsSubmittingComment(false);
-    }
-  };
-
-  if (postLoading) {
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="min-h-screen relative" style={{ background: "#060b14" }}>
+        <ParticleCanvas />
+        <Navbar />
+        <div className="container py-32 text-center" style={{ zIndex: 1, position: "relative" }}>
+          <div className="w-8 h-8 border-2 rounded-full animate-spin mx-auto" style={{ borderColor: "#00FFFF", borderTopColor: "transparent" }} />
+        </div>
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-12">
-          <Button variant="ghost" onClick={() => navigate("/blog")} className="mb-8">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Blog
-          </Button>
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <p className="text-muted-foreground">Post not found.</p>
-            </CardContent>
-          </Card>
+      <div className="min-h-screen relative" style={{ background: "#060b14" }}>
+        <ParticleCanvas />
+        <Navbar />
+        <div className="container py-32 text-center" style={{ zIndex: 1, position: "relative" }}>
+          <h1 className="font-display text-3xl font-bold mb-4" style={{ color: "#f0f4f8" }}>Post not found</h1>
+          <Link href="/blog" className="btn-secondary inline-flex items-center gap-2">
+            <ArrowLeft size={16} /> Back to Blog
+          </Link>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12 max-w-3xl">
-        <Button variant="ghost" onClick={() => navigate("/blog")} className="mb-8">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Blog
-        </Button>
+  const approvedComments = comments?.filter((c: any) => c.status === "approved") ?? [];
 
-        <article>
-          <header className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground mb-4">{post.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-              <span>By {post.author}</span>
-              <span>{format(new Date(post.publishedAt || post.createdAt), "MMMM d, yyyy")}</span>
-              <span>{post.viewsCount} views</span>
-            </div>
-            <div className="flex gap-2">
-              <Badge variant="secondary">{post.category}</Badge>
-            </div>
-          </header>
+  return (
+    <div className="min-h-screen relative" style={{ background: "#060b14" }}>
+      <ParticleCanvas />
+      <Navbar />
+      <main className="relative" style={{ zIndex: 1, paddingTop: "100px" }}>
+        <div className="container py-16 max-w-3xl mx-auto">
+          <Link href="/blog" className="inline-flex items-center gap-2 text-sm mb-8 transition-colors hover:text-cyan-400" style={{ color: "rgba(240,244,248,0.5)" }}>
+            <ArrowLeft size={14} /> Back to Blog
+          </Link>
+
+          <div className="mb-6">
+            <span className="text-xs px-2 py-1 rounded-full" style={{ background: "rgba(0,255,255,0.08)", color: "#00FFFF", border: "1px solid rgba(0,255,255,0.2)" }}>
+              <Tag size={10} className="inline mr-1" />{post.category}
+            </span>
+          </div>
+
+          <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-6" style={{ color: "#f0f4f8", lineHeight: "1.2" }}>
+            {post.title}
+          </h1>
+
+          <div className="flex items-center gap-4 mb-8 text-sm" style={{ color: "rgba(240,244,248,0.4)" }}>
+            <span>By {post.author}</span>
+            <span className="flex items-center gap-1">
+              <Calendar size={12} />
+              {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : "Draft"}
+            </span>
+            <span className="flex items-center gap-1"><Eye size={12} />{post.viewsCount ?? 0} views</span>
+          </div>
 
           {post.featuredImage && (
-            <img
-              src={post.featuredImage}
-              alt={post.title}
-              className="w-full h-96 object-cover rounded-lg mb-8"
-            />
+            <div className="w-full h-64 md:h-80 rounded-xl overflow-hidden mb-10">
+              <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" />
+            </div>
           )}
 
-          <div className="prose prose-invert max-w-none mb-12">
-            <div
-              className="text-foreground leading-relaxed"
-              dangerouslySetInnerHTML={{
-                __html: post.content,
-              }}
-            />
-          </div>
-        </article>
+          <div
+            className="prose-tn mb-16"
+            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
+            style={{ color: "rgba(240,244,248,0.8)", lineHeight: "1.8", fontFamily: "Inter, sans-serif" }}
+          />
 
-        <div className="border-t border-border my-12" />
+          <div className="glossy-card p-8">
+            <h3 className="font-display text-xl font-bold mb-6" style={{ color: "#f0f4f8" }}>
+              Comments ({approvedComments.length})
+            </h3>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-2">
-            <MessageCircle className="h-6 w-6" />
-            Comments ({comments.length})
-          </h2>
-
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Leave a Comment</CardTitle>
-              <CardDescription>Your comment will be reviewed before appearing on the site.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleCommentSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Your Name"
-                    value={commentForm.authorName}
-                    onChange={(e) =>
-                      setCommentForm({ ...commentForm, authorName: e.target.value })
-                    }
-                    disabled={isSubmittingComment}
-                  />
-                  <Input
-                    type="email"
-                    placeholder="Your Email"
-                    value={commentForm.authorEmail}
-                    onChange={(e) =>
-                      setCommentForm({ ...commentForm, authorEmail: e.target.value })
-                    }
-                    disabled={isSubmittingComment}
-                  />
-                </div>
-                <Textarea
-                  placeholder="Your comment..."
-                  value={commentForm.content}
-                  onChange={(e) =>
-                    setCommentForm({ ...commentForm, content: e.target.value })
-                  }
-                  disabled={isSubmittingComment}
-                  rows={5}
-                />
-                <Button type="submit" disabled={isSubmittingComment}>
-                  {isSubmittingComment ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    "Submit Comment"
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-4">
-            {comments.length === 0 ? (
-              <p className="text-muted-foreground">No comments yet. Be the first to comment!</p>
-            ) : (
-              comments.map((comment) => (
-                <Card key={comment.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">{comment.authorName}</CardTitle>
-                        <CardDescription>
-                          {format(new Date(comment.createdAt), "MMMM d, yyyy 'at' h:mm a")}
-                        </CardDescription>
-                      </div>
+            {approvedComments.length > 0 && (
+              <div className="space-y-4 mb-8">
+                {approvedComments.map((comment: any) => (
+                  <div key={comment.id} className="p-4 rounded-lg" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium text-sm" style={{ color: "#f0f4f8" }}>{comment.authorName}</span>
+                      <span className="text-xs" style={{ color: "rgba(240,244,248,0.35)" }}>
+                        {new Date(comment.createdAt).toLocaleDateString("en-GB")}
+                      </span>
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-foreground whitespace-pre-wrap">{comment.content}</p>
-                  </CardContent>
-                </Card>
-              ))
+                    <p className="text-sm" style={{ color: "rgba(240,244,248,0.65)", lineHeight: "1.6" }}>{comment.content}</p>
+                  </div>
+                ))}
+              </div>
             )}
+
+            <h4 className="font-display text-base font-semibold mb-4" style={{ color: "#f0f4f8" }}>Leave a Comment</h4>
+            <form onSubmit={(e) => { e.preventDefault(); if (name && email && content) submitComment.mutate({ postId: post.id, authorName: name, authorEmail: email, content }); }} className="flex flex-col gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input type="text" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full px-4 py-3 rounded-lg text-sm outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8", fontFamily: "Inter, sans-serif" }} />
+                <input type="email" placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full px-4 py-3 rounded-lg text-sm outline-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8", fontFamily: "Inter, sans-serif" }} />
+              </div>
+              <textarea placeholder="Your comment..." value={content} onChange={(e) => setContent(e.target.value)} required rows={4} className="w-full px-4 py-3 rounded-lg text-sm outline-none resize-none" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8", fontFamily: "Inter, sans-serif" }} />
+              <button type="submit" disabled={submitComment.isPending} className="btn-primary justify-center self-start">
+                {submitComment.isPending ? "Submitting..." : <><Send size={14} /> Post Comment</>}
+              </button>
+            </form>
           </div>
-        </section>
-      </div>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

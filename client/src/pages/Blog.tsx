@@ -1,192 +1,144 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLocation } from "wouter";
-import { format } from "date-fns";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/sections/Footer";
+import ParticleCanvas from "@/components/ParticleCanvas";
+import { Search, Calendar, Eye, Tag, ArrowRight } from "lucide-react";
 
 export default function Blog() {
-  const [, navigate] = useLocation();
-  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
-  const [sortBy, setSortBy] = useState<"date" | "views">("date");
+  const [category, setCategory] = useState<string | undefined>(undefined);
+  const [page, setPage] = useState(1);
 
-  // Fetch posts
-  const { data: postsData, isLoading: postsLoading } = trpc.blog.list.useQuery({
+  const { data, isLoading } = trpc.blog.list.useQuery({
     page,
-    limit: 10,
+    limit: 9,
     search: search || undefined,
-    category: selectedCategory,
-    sortBy,
+    category: category || undefined,
+    sortBy: "date",
   });
 
-  // Fetch categories
-  const { data: categories = [], isLoading: categoriesLoading } = trpc.blog.categories.useQuery();
-
-  const handleSearch = (value: string) => {
-    setSearch(value);
-    setPage(1);
-  };
-
-  const handleCategoryFilter = (category: string | undefined) => {
-    setSelectedCategory(category);
-    setPage(1);
-  };
-
-  const handlePostClick = (slug: string) => {
-    navigate(`/blog/${slug}`);
-  };
+  const { data: categories } = trpc.blog.categories.useQuery();
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Blog</h1>
-          <p className="text-lg text-muted-foreground">
-            Operations insights, automation strategies, and systems thinking from TrueNorth
-          </p>
-        </div>
-
-        {/* Search Bar */}
-        <div className="mb-8 flex gap-2">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search posts..."
-              value={search}
-              onChange={(e) => handleSearch(e.target.value)}
-              className="pl-10"
-            />
+    <div className="min-h-screen relative" style={{ background: "#060b14" }}>
+      <ParticleCanvas />
+      <Navbar />
+      <main className="relative" style={{ zIndex: 1, paddingTop: "100px" }}>
+        <div className="container py-16">
+          <div className="text-center mb-14 animate-on-scroll">
+            <p className="section-label mb-3">Insights & Intelligence</p>
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-4" style={{ color: "#f0f4f8" }}>
+              The TrueNorth <span style={{ color: "#00FFFF" }}>Blog</span>
+            </h1>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgba(240,244,248,0.55)" }}>
+              Operational intelligence, AI implementation guides, and systems thinking for founders and operators.
+            </p>
           </div>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as "date" | "views")}
-            className="px-4 py-2 border border-border rounded-md bg-background text-foreground"
-          >
-            <option value="date">Newest First</option>
-            <option value="views">Most Viewed</option>
-          </select>
-        </div>
 
-        {/* Category Filter */}
-        <div className="mb-8">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant={selectedCategory === undefined ? "default" : "outline"}
-              onClick={() => handleCategoryFilter(undefined)}
-              size="sm"
-            >
-              All Posts
-            </Button>
-            {categoriesLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  onClick={() => handleCategoryFilter(category)}
-                  size="sm"
-                >
-                  {category}
-                </Button>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Posts Grid */}
-        <div className="grid gap-6 mb-12">
-          {postsLoading ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <div className="flex flex-col md:flex-row gap-4 mb-10 max-w-3xl mx-auto">
+            <div className="relative flex-1">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "rgba(240,244,248,0.4)" }} />
+              <input
+                type="text"
+                placeholder="Search articles..."
+                value={search}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                className="w-full pl-10 pr-4 py-3 rounded-lg text-sm outline-none"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8", fontFamily: "Inter, sans-serif" }}
+              />
             </div>
-          ) : postsData?.posts.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <p className="text-muted-foreground">No posts found. Try adjusting your search or filters.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            postsData?.posts.map((post) => (
-              <Card
-                key={post.id}
-                className="hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => handlePostClick(post.slug)}
-              >
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <CardTitle className="text-2xl mb-2">{post.title}</CardTitle>
-                      <CardDescription className="text-base">{post.excerpt}</CardDescription>
-                    </div>
-                    {post.featuredImage && (
-                      <img
-                        src={post.featuredImage}
-                        alt={post.title}
-                        className="w-32 h-32 object-cover rounded-md"
-                      />
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <span>By {post.author}</span>
-                      <span>{format(new Date(post.publishedAt || post.createdAt), "MMM d, yyyy")}</span>
-                      <span>{post.viewsCount} views</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Badge variant="secondary">{post.category}</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-
-        {/* Pagination */}
-        {postsData && postsData.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
+            <select
+              value={category || ""}
+              onChange={(e) => { setCategory(e.target.value || undefined); setPage(1); }}
+              className="px-4 py-3 rounded-lg text-sm outline-none"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8", fontFamily: "Inter, sans-serif" }}
             >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+              <option value="">All Categories</option>
+              {categories?.map((cat: string) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
 
-            <div className="flex items-center gap-2">
-              {Array.from({ length: postsData.totalPages }, (_, i) => i + 1).map((p) => (
-                <Button
-                  key={p}
-                  variant={p === page ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </Button>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="glossy-card p-6 animate-pulse" style={{ height: "280px" }} />
               ))}
             </div>
+          ) : !data?.posts?.length ? (
+            <div className="text-center py-20">
+              <p style={{ color: "rgba(240,244,248,0.4)" }}>No articles found. Try a different search or category.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {data.posts.map((post: any) => (
+                <Link key={post.id} href={`/blog/${post.slug}`}>
+                  <article className="glossy-card p-6 cursor-pointer group transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
+                    {post.featuredImage && (
+                      <div className="w-full h-40 rounded-lg overflow-hidden mb-4">
+                        <img src={post.featuredImage} alt={post.title} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs px-2 py-1 rounded-full" style={{ background: "rgba(0,255,255,0.08)", color: "#00FFFF", border: "1px solid rgba(0,255,255,0.2)" }}>
+                        <Tag size={10} className="inline mr-1" />{post.category}
+                      </span>
+                    </div>
+                    <h2 className="font-display text-lg font-bold mb-2 group-hover:text-cyan-400 transition-colors" style={{ color: "#f0f4f8" }}>
+                      {post.title}
+                    </h2>
+                    {post.excerpt && (
+                      <p className="text-sm mb-4 flex-1" style={{ color: "rgba(240,244,248,0.55)", lineHeight: "1.6" }}>
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <div className="flex items-center justify-between mt-auto pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                      <div className="flex items-center gap-3 text-xs" style={{ color: "rgba(240,244,248,0.4)" }}>
+                        <span className="flex items-center gap-1">
+                          <Calendar size={11} />
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "Draft"}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye size={11} />{post.viewsCount ?? 0}
+                        </span>
+                      </div>
+                      <ArrowRight size={14} style={{ color: "#00FFFF" }} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          )}
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage((p) => Math.min(postsData.totalPages, p + 1))}
-              disabled={page === postsData.totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </div>
+          {data && data.totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-12">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 rounded-lg text-sm transition-all"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: page === 1 ? "rgba(240,244,248,0.3)" : "#f0f4f8" }}
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2 text-sm" style={{ color: "rgba(240,244,248,0.55)" }}>
+                Page {page} of {data.totalPages}
+              </span>
+              <button
+                onClick={() => setPage(p => Math.min(data.totalPages, p + 1))}
+                disabled={page === data.totalPages}
+                className="px-4 py-2 rounded-lg text-sm transition-all"
+                style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: page === data.totalPages ? "rgba(240,244,248,0.3)" : "#f0f4f8" }}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

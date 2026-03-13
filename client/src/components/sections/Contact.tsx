@@ -1,300 +1,60 @@
 import { useState } from "react";
-import { ArrowRight, Send, CheckCircle, Mail, MapPin } from "lucide-react";
+import { Send, CheckCircle, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
+const AUDIENCE_OPTIONS = ["Solopreneur", "Small Business (1-10)", "SME (10-50)", "Scale-up (50-200)", "Enterprise (200+)", "Other"];
+
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", company: "", message: "", service: "" });
+  const [form, setForm] = useState({ name: "", email: "", company: "", message: "", audience: "" });
   const [submitted, setSubmitted] = useState(false);
+
+  const submitContact = trpc.contact.submit.useMutation({
+    onSuccess: () => setSubmitted(true),
+    onError: () => toast.error("Something went wrong. Please try again."),
+  });
+
+  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error("Please fill in the required fields.");
-      return;
-    }
-    setSubmitted(true);
-    toast.success("Message received — we'll be in touch shortly.");
+    submitContact.mutate(form);
   };
 
-  const services = [
-    "Book a Discovery Call",
-    "Custom PA / EA System",
-    "Enterprise Operating System",
-    "Workflow Automation",
-    "Bespoke App Development",
-    "Business Systems",
-    "Other",
-  ];
+  const inputStyle = { background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#f0f4f8" };
 
   return (
-    <section
-      id="contact"
-      className="relative py-24 md:py-32 overflow-hidden"
-      style={{ background: "oklch(0.12 0.04 240)" }}
-    >
-      {/* Glow */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "radial-gradient(ellipse at 50% 0%, oklch(0.65 0.12 192 / 6%) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="container relative z-10">
-        {/* Header */}
-        <div className="text-center mb-16 animate-on-scroll">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-            <span className="section-label">07 — Get In Touch</span>
-            <div className="h-px w-12" style={{ background: "oklch(0.65 0.12 192)" }} />
-          </div>
-          <h2
-            className="font-display font-bold mb-4"
-            style={{
-              fontSize: "clamp(2rem, 4vw, 3rem)",
-              color: "oklch(0.92 0.01 220)",
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Ready for Your Operations{" "}
-            <span className="gradient-text-cyan">to Just Work?</span>
-          </h2>
-          <p
-            className="max-w-xl mx-auto"
-            style={{ color: "oklch(0.65 0.03 220)", fontSize: "1.05rem", lineHeight: "1.7" }}
-          >
-            Tell us what you need. We'll tell you exactly how we can deliver it — and what it will cost.
-          </p>
+    <section id="contact" className="relative py-24" style={{ zIndex: 1 }}>
+      <div className="container">
+        <div className="text-center mb-14 animate-on-scroll">
+          <p className="section-label mb-3">Contact</p>
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-4" style={{ color: "#f0f4f8" }}>Start a conversation</h2>
+          <p className="text-lg max-w-2xl mx-auto" style={{ color: "rgba(240,244,248,0.55)" }}>Tell us about your business and what you are trying to solve. We will respond within 24 hours.</p>
         </div>
-
-        <div className="grid md:grid-cols-5 gap-10 max-w-5xl mx-auto">
-          {/* Left: Contact info */}
-          <div className="md:col-span-2 animate-on-scroll">
-            <div className="flex flex-col gap-6">
-              <div>
-                <h3
-                  className="font-display font-semibold mb-4"
-                  style={{ fontSize: "1.2rem", color: "oklch(0.88 0.01 220)" }}
-                >
-                  TrueNorth Operations Group
-                </h3>
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-start gap-3">
-                    <Mail size={16} style={{ color: "oklch(0.65 0.12 192)", marginTop: "2px", flexShrink: 0 }} />
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: "oklch(0.80 0.01 220)" }}>
-                        Email
-                      </div>
-                      <a
-                        href="mailto:hello@truenorthoperationsgroup.com"
-                        className="text-sm transition-colors"
-                        style={{ color: "oklch(0.65 0.03 220)" }}
-                      >
-                        hello@truenorthoperationsgroup.com
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <MapPin size={16} style={{ color: "oklch(0.65 0.12 192)", marginTop: "2px", flexShrink: 0 }} />
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: "oklch(0.80 0.01 220)" }}>
-                        Location
-                      </div>
-                      <div className="text-sm" style={{ color: "oklch(0.65 0.03 220)" }}>
-                        Ashford, Kent, UK
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick links */}
-              <div
-                className="p-5 rounded-xl"
-                style={{
-                  background: "oklch(0.16 0.04 240)",
-                  border: "1px solid oklch(1 0 0 / 8%)",
-                }}
-              >
-                <span className="section-label mb-3 block">Quick Actions</span>
-                <div className="flex flex-col gap-2">
-                  {[
-                    { label: "Book a Discovery Call", href: "#contact" },
-                    { label: "Explore the Marketplace", href: "#marketplace" },
-                    { label: "View Our Portfolio", href: "#portfolio" },
-                  ].map((link) => (
-                    <button
-                      key={link.label}
-                      onClick={() => {
-                        const el = document.querySelector(link.href);
-                        if (el) el.scrollIntoView({ behavior: "smooth" });
-                      }}
-                      className="flex items-center gap-2 text-sm text-left group transition-colors py-1"
-                      style={{ color: "oklch(0.65 0.03 220)" }}
-                    >
-                      <ArrowRight
-                        size={12}
-                        style={{ color: "oklch(0.65 0.12 192)", flexShrink: 0 }}
-                        className="transition-transform group-hover:translate-x-1"
-                      />
-                      {link.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+        <div className="glossy-card p-8 md:p-10 max-w-2xl mx-auto animate-on-scroll">
+          {submitted ? (
+            <div className="text-center py-8">
+              <CheckCircle size={48} className="mx-auto mb-4" style={{ color: "#00FFFF" }} />
+              <h3 className="font-display text-2xl font-bold mb-3" style={{ color: "#f0f4f8" }}>Message received</h3>
+              <p style={{ color: "rgba(240,244,248,0.6)" }}>We will be in touch within 24 hours.</p>
             </div>
-          </div>
-
-          {/* Right: Form */}
-          <div className="md:col-span-3 animate-on-scroll animate-on-scroll-delay-2">
-            {submitted ? (
-              <div
-                className="flex flex-col items-center justify-center gap-4 p-12 rounded-xl h-full"
-                style={{
-                  background: "oklch(0.16 0.04 240)",
-                  border: "1px solid oklch(0.65 0.12 192 / 30%)",
-                }}
-              >
-                <CheckCircle size={48} style={{ color: "oklch(0.65 0.12 192)" }} />
-                <h3
-                  className="font-display font-bold text-center"
-                  style={{ fontSize: "1.5rem", color: "oklch(0.92 0.01 220)" }}
-                >
-                  Message Received
-                </h3>
-                <p className="text-center" style={{ color: "oklch(0.65 0.03 220)", fontSize: "0.95rem" }}>
-                  We'll review your enquiry and be in touch within one business day.
-                </p>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input type="text" placeholder="Your name" value={form.name} onChange={set("name")} required className="px-4 py-3 rounded-lg text-sm outline-none" style={inputStyle} />
+                <input type="email" placeholder="Your email" value={form.email} onChange={set("email")} required className="px-4 py-3 rounded-lg text-sm outline-none" style={inputStyle} />
               </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="p-8 rounded-xl flex flex-col gap-4"
-                style={{
-                  background: "oklch(0.16 0.04 240)",
-                  border: "1px solid oklch(1 0 0 / 8%)",
-                }}
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-mono-tn text-xs" style={{ color: "oklch(0.55 0.03 220)", letterSpacing: "0.08em" }}>
-                      NAME *
-                    </label>
-                    <input
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="Your name"
-                      className="px-4 py-3 rounded-md text-sm outline-none transition-all"
-                      style={{
-                        background: "oklch(0.20 0.035 240)",
-                        border: "1px solid oklch(1 0 0 / 12%)",
-                        color: "oklch(0.88 0.01 220)",
-                        fontFamily: "'DM Sans', sans-serif",
-                      }}
-                      onFocus={(e) => (e.target.style.borderColor = "oklch(0.65 0.12 192 / 50%)")}
-                      onBlur={(e) => (e.target.style.borderColor = "oklch(1 0 0 / 12%)")}
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-mono-tn text-xs" style={{ color: "oklch(0.55 0.03 220)", letterSpacing: "0.08em" }}>
-                      EMAIL *
-                    </label>
-                    <input
-                      type="email"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="your@email.com"
-                      className="px-4 py-3 rounded-md text-sm outline-none transition-all"
-                      style={{
-                        background: "oklch(0.20 0.035 240)",
-                        border: "1px solid oklch(1 0 0 / 12%)",
-                        color: "oklch(0.88 0.01 220)",
-                        fontFamily: "'DM Sans', sans-serif",
-                      }}
-                      onFocus={(e) => (e.target.style.borderColor = "oklch(0.65 0.12 192 / 50%)")}
-                      onBlur={(e) => (e.target.style.borderColor = "oklch(1 0 0 / 12%)")}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-mono-tn text-xs" style={{ color: "oklch(0.55 0.03 220)", letterSpacing: "0.08em" }}>
-                    COMPANY / ORGANISATION
-                  </label>
-                  <input
-                    type="text"
-                    value={form.company}
-                    onChange={(e) => setForm({ ...form, company: e.target.value })}
-                    placeholder="Optional"
-                    className="px-4 py-3 rounded-md text-sm outline-none transition-all"
-                    style={{
-                      background: "oklch(0.20 0.035 240)",
-                      border: "1px solid oklch(1 0 0 / 12%)",
-                      color: "oklch(0.88 0.01 220)",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "oklch(0.65 0.12 192 / 50%)")}
-                    onBlur={(e) => (e.target.style.borderColor = "oklch(1 0 0 / 12%)")}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-mono-tn text-xs" style={{ color: "oklch(0.55 0.03 220)", letterSpacing: "0.08em" }}>
-                    I'M INTERESTED IN
-                  </label>
-                  <select
-                    value={form.service}
-                    onChange={(e) => setForm({ ...form, service: e.target.value })}
-                    className="px-4 py-3 rounded-md text-sm outline-none transition-all"
-                    style={{
-                      background: "oklch(0.20 0.035 240)",
-                      border: "1px solid oklch(1 0 0 / 12%)",
-                      color: form.service ? "oklch(0.88 0.01 220)" : "oklch(0.50 0.03 220)",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                  >
-                    <option value="">Select a service...</option>
-                    {services.map((s) => (
-                      <option key={s} value={s} style={{ background: "oklch(0.16 0.04 240)", color: "oklch(0.88 0.01 220)" }}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="font-mono-tn text-xs" style={{ color: "oklch(0.55 0.03 220)", letterSpacing: "0.08em" }}>
-                    MESSAGE *
-                  </label>
-                  <textarea
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder="Tell us what you need and what outcome you're looking for..."
-                    rows={4}
-                    className="px-4 py-3 rounded-md text-sm outline-none transition-all resize-none"
-                    style={{
-                      background: "oklch(0.20 0.035 240)",
-                      border: "1px solid oklch(1 0 0 / 12%)",
-                      color: "oklch(0.88 0.01 220)",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                    onFocus={(e) => (e.target.style.borderColor = "oklch(0.65 0.12 192 / 50%)")}
-                    onBlur={(e) => (e.target.style.borderColor = "oklch(1 0 0 / 12%)")}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-primary-tn flex items-center justify-center gap-2 group mt-2"
-                >
-                  <Send size={15} />
-                  Send Enquiry
-                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-                </button>
-              </form>
-            )}
-          </div>
+              <input type="text" placeholder="Company (optional)" value={form.company} onChange={set("company")} className="px-4 py-3 rounded-lg text-sm outline-none" style={inputStyle} />
+              <select value={form.audience} onChange={set("audience")} className="px-4 py-3 rounded-lg text-sm outline-none" style={{ ...inputStyle, color: form.audience ? "#f0f4f8" : "rgba(240,244,248,0.4)" }}>
+                <option value="" disabled>What best describes you?</option>
+                {AUDIENCE_OPTIONS.map((o) => <option key={o} value={o} style={{ background: "#0d1117" }}>{o}</option>)}
+              </select>
+              <textarea placeholder="What are you trying to solve?" value={form.message} onChange={set("message")} required rows={4} className="px-4 py-3 rounded-lg text-sm outline-none resize-none" style={inputStyle} />
+              <button type="submit" disabled={submitContact.isPending} className="btn-primary justify-center">
+                {submitContact.isPending ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : <><Send size={15} /> Send Message</>}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </section>

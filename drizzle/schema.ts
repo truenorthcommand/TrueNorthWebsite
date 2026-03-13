@@ -73,6 +73,36 @@ export const blogPostsRelations = relations(blogPosts, ({ many }) => ({
   comments: many(blogComments),
 }));
 
+/**
+ * Audit tool submissions
+ */
+export const auditSubmissions = mysqlTable("audit_submissions", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  answers: text("answers").notNull(), // JSON string
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AuditSubmission = typeof auditSubmissions.$inferSelect;
+export type InsertAuditSubmission = typeof auditSubmissions.$inferInsert;
+
+/**
+ * Contact form submissions
+ */
+export const contactSubmissions = mysqlTable("contact_submissions", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  company: varchar("company", { length: 255 }),
+  audience: varchar("audience", { length: 100 }),
+  message: text("message").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ContactSubmission = typeof contactSubmissions.$inferSelect;
+export type InsertContactSubmission = typeof contactSubmissions.$inferInsert;
+
 export const blogCommentsRelations = relations(blogComments, ({ one }) => ({
   post: one(blogPosts, {
     fields: [blogComments.postId],

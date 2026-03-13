@@ -50,3 +50,20 @@
 - [x] Update Portfolio badges to From pricing
 - [ ] 8-week pricing review (due ~May 2026)
 - [x] Replace inline SVG logo with extracted TrueNorth compass logo (white text, cyan #00FFFF)
+
+## Clean Build v2 (March 2026)
+- [x] Remove all legacy section components and pages — clean slate
+- [x] Configure global CSS: TrueNorth design tokens, Space Grotesk + Inter fonts
+- [x] Build Navbar: glassmorphism, compass logo CDN, all nav links
+- [x] Build ParticleCanvas: teal nodes, connecting lines, 60fps, prefers-reduced-motion
+- [x] Build Footer: logo, nav links, company info, Powered by TrueNorthOS
+- [x] Build Hero: three glossy cards, AI 3D icons, scrolling words
+- [x] Build Portfolio, Marketplace, AuditTool, Services, Process, About, Contact sections
+- [x] Build Blog list, BlogPost, AdminBlog pages
+- [x] Add auditSubmissions and contactSubmissions tables — db:push applied
+- [x] Add contact, audit, marketplace tRPC routers
+- [x] Fix AdminBlog postsData type alignment
+- [ ] Add CTA click tracking for 8-week pricing review (due ~May 2026)
+- [ ] Add real case study to Portfolio (specific client outcome + numbers)
+- [ ] Connect Gmail credentials in n8n comment notification workflow
+- [ ] Set up custom domain (truenorthoperationsgroup.com)

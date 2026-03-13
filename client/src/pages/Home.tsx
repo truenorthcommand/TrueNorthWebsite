@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useAuth } from "@/_core/hooks/useAuth";
 import Navbar from "@/components/Navbar";
+import ParticleCanvas from "@/components/ParticleCanvas";
 import Hero from "@/components/sections/Hero";
 import Portfolio from "@/components/sections/Portfolio";
 import Marketplace from "@/components/sections/Marketplace";
@@ -12,11 +12,6 @@ import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
-  // The userAuth hooks provides authentication state
-  // To implement login/logout functionality, simply call logout() or redirect to getLoginUrl()
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // Initialize scroll animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -31,12 +26,12 @@ export default function Home() {
 
     const elements = document.querySelectorAll(".animate-on-scroll");
     elements.forEach((el) => observer.observe(el));
-
     return () => observer.disconnect();
   }, []);
 
   return (
-    <div className="min-h-screen" style={{ background: "oklch(0.12 0.04 240)" }}>
+    <div className="min-h-screen relative" style={{ background: "#060b14" }}>
+      <ParticleCanvas />
       <Navbar />
       <main>
         <Hero />
