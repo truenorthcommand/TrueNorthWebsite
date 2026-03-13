@@ -8,7 +8,7 @@ import { buildAuditEmailHtml, buildAuditEmailText } from "../auditEmailTemplate"
 import { ENV } from "../_core/env";
 import { Resend } from "resend";
 
-// Verified sending domain: noreply.truenorthoperationsgroup.com
+// Verified sending domain: noreply.truenorthoperationsgroup.com (subdomain)
 const FROM_EMAIL = "TrueNorth Operations Group <noreply@noreply.truenorthoperationsgroup.com>";
 
 async function sendAuditResultsEmail(
