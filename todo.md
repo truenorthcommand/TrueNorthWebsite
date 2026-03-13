@@ -30,6 +30,13 @@
 - [x] n8n comment notification workflow (ID: 7nBjxnduTYP6XTJb)
 - [x] N8N_COMMENT_WEBHOOK_URL env var wired to backend
 
+## Intro Splash Screen (March 2026)
+- [x] Upload logo animation video to CDN
+- [x] Create IntroSplash component with video player and skip button
+- [x] Add routing logic to show splash on first visit only (localStorage tracking)
+- [x] Test intro splash on first visit and verify skip functionality
+- [x] Auto-redirect to homepage after video completes
+
 ## Pending / Future
 - [ ] Rich text editor (TipTap) for post content in admin dashboard
 - [ ] AI content creator agent (bi-weekly post generation)
