@@ -41,6 +41,7 @@ export default function IntroSplash() {
           ref={videoRef}
           src={VIDEO_URL}
           autoPlay
+          muted
           onEnded={handleVideoEnd}
           className="w-full h-full object-cover"
           playsInline

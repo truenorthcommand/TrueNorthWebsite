@@ -36,6 +36,7 @@
 - [x] Add routing logic to show splash on first visit only (localStorage tracking)
 - [x] Test intro splash on first visit and verify skip functionality
 - [x] Auto-redirect to homepage after video completes
+- [x] Fix video autoplay by adding muted attribute (browser autoplay policy)
 
 ## Pending / Future
 - [ ] Rich text editor (TipTap) for post content in admin dashboard
