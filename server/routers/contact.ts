@@ -21,24 +21,35 @@ async function sendAuditResultsEmail(
     return;
   }
 
-  const report = generateAuditReport(answers);
-  const html = buildAuditEmailHtml(name, report);
-  const text = buildAuditEmailText(name, report);
+  try {
+    const report = generateAuditReport(answers);
+    const html = buildAuditEmailHtml(name, report);
+    const text = buildAuditEmailText(name, report);
 
-  const resend = new Resend(ENV.resendApiKey);
+    const resend = new Resend(ENV.resendApiKey);
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
-    to: email,
-    subject: `Your TrueNorth Operational Audit Report — Score: ${report.score.total}/10`,
-    html,
-    text,
-  });
+    // Set a 10-second timeout for the email send to prevent hanging
+    const emailPromise = resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: `Your TrueNorth Operational Audit Report — Score: ${report.score.total}/10`,
+      html,
+      text,
+    });
 
-  if (error) {
-    console.error("[Audit Email] Failed to send audit results email:", error);
-  } else {
-    console.log(`[Audit Email] Audit results sent to ${email}`);
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error("Email send timeout after 10 seconds")), 10000);
+    });
+
+    const { error } = await Promise.race([emailPromise, timeoutPromise]) as any;
+
+    if (error) {
+      console.error("[Audit Email] Failed to send audit results email:", error);
+    } else {
+      console.log(`[Audit Email] Audit results sent to ${email}`);
+    }
+  } catch (err) {
+    console.error("[Audit Email] Exception during email send:", err instanceof Error ? err.message : String(err));
   }
 }
 
@@ -95,10 +106,15 @@ export const auditRouter = router({
         content: `**Name:** ${input.name}\n**Email:** ${input.email}\n\n**Answers:**\n${answersText}`,
       });
 
-      // Send personalised audit results email to the user (non-blocking)
-      sendAuditResultsEmail(input.name, input.email, input.answers).catch((err) => {
-        console.error("[Audit Email] Unhandled error:", err);
-      });
+      // Send personalised audit results email to the user (non-blocking, fire-and-forget)
+      // We do not await this to keep the mutation response fast
+      sendAuditResultsEmail(input.name, input.email, input.answers)
+        .catch((err) => {
+          console.error("[Audit Email] Unhandled error in fire-and-forget:", err);
+        });
+      
+      // Ensure we don't hang waiting for email
+      // The email send happens in the background with its own 10-second timeout
 
       return { success: true };
     }),
