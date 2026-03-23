@@ -21,10 +21,11 @@ export async function getBlogPosts(options: {
 
   const conditions = [eq(blogPosts.draft, false)];
 
-  // Filter by search
+  // Filter by search — LIKE-based (no FULLTEXT index required; sufficient for current post volume)
   if (options.search) {
+    const term = `%${options.search}%`;
     conditions.push(
-      sql`MATCH(${blogPosts.title}, ${blogPosts.excerpt}, ${blogPosts.content}) AGAINST(${options.search} IN BOOLEAN MODE)`
+      sql`(${blogPosts.title} LIKE ${term} OR ${blogPosts.excerpt} LIKE ${term} OR ${blogPosts.content} LIKE ${term})`
     );
   }
 

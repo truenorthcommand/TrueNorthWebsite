@@ -90,3 +90,7 @@
 - [x] Verify sending domain: noreply.truenorthoperationsgroup.com (Squarespace DNS)
 - [x] Wire email sending into audit.submit tRPC procedure (non-blocking)
 - [x] Live test confirmed: email delivered to mattcottam35@gmail.com
+
+## Blog Page Fix (March 2026)
+- [x] Investigate blog page load failure — diagnose root cause (FULLTEXT index missing on blog_posts)
+- [x] Fix blog page load failure — replaced MATCH/AGAINST with LIKE-based search, all 5 tests passing
