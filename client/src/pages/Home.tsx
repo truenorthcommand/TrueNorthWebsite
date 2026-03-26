@@ -12,6 +12,19 @@ import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 
 export default function Home() {
+  // Handle deep-link hashes: when navigating from /blog → /#section,
+  // scroll to the target section once the page has mounted.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const timer = setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

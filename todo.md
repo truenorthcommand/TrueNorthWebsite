@@ -91,6 +91,12 @@
 - [x] Wire email sending into audit.submit tRPC procedure (non-blocking)
 - [x] Live test confirmed: email delivered to mattcottam35@gmail.com
 
+<<<<<<< Updated upstream
 ## Blog Page Fix (March 2026)
 - [x] Investigate blog page load failure — diagnose root cause (FULLTEXT index missing on blog_posts)
 - [x] Fix blog page load failure — replaced MATCH/AGAINST with LIKE-based search, all 5 tests passing
+=======
+## Blog Navigation Fix (March 2026)
+- [x] Diagnose blog page navigation isolation — root cause: Navbar used DOM scroll only, no route awareness
+- [x] Fix navigation trapping — Navbar now detects current route, uses /#hash when off home; Home handles hash on mount
+>>>>>>> Stashed changes

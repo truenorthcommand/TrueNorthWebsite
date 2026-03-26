@@ -17,7 +17,10 @@ const links = [
 export default function Navbar() {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [, navigate]                = useLocation();
+  const [location, navigate]        = useLocation();
+
+  // True when we are NOT on the homepage — any route other than "/"
+  const isOffHome = location !== "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -25,9 +28,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (href: string, isPage?: boolean) => {
+  /**
+   * Route-aware navigation.
+   * On homepage  → smooth-scroll to anchor directly.
+   * Off homepage → navigate to "/#section" so home loads and scrolls on arrival.
+   * Page links   → always use wouter navigate (e.g. /blog).
+   */
+  const handleNav = (href: string, isPage?: boolean) => {
     setMobileOpen(false);
     if (isPage) { navigate(href); return; }
+    if (isOffHome) { window.location.href = `/${href}`; return; }
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
@@ -46,8 +56,8 @@ export default function Navbar() {
 
           {/* Logo */}
           <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+            href="/"
+            onClick={(e) => { e.preventDefault(); setMobileOpen(false); if (isOffHome) { navigate("/"); } else { window.scrollTo({ top: 0, behavior: "smooth" }); } }}
             className="shrink-0"
           >
             <img
@@ -66,7 +76,7 @@ export default function Navbar() {
             {links.map((link) => (
               <button
                 key={link.href}
-                onClick={() => scrollTo(link.href, link.isPage)}
+                onClick={() => handleNav(link.href, link.isPage)}
                 className="text-sm font-medium transition-colors duration-200 relative group"
                 style={{
                   color: link.isPage ? "#00FFFF" : "rgba(240,244,248,0.7)",
@@ -84,7 +94,7 @@ export default function Navbar() {
 
           {/* CTA */}
           <div className="hidden lg:flex">
-            <button onClick={() => scrollTo("#contact")} className="btn-primary text-sm">
+            <button onClick={() => handleNav("#contact")} className="btn-primary text-sm">
               Book a Discovery Call
             </button>
           </div>
@@ -115,7 +125,7 @@ export default function Navbar() {
             {links.map((link) => (
               <button
                 key={link.href}
-                onClick={() => scrollTo(link.href, link.isPage)}
+                onClick={() => handleNav(link.href, link.isPage)}
                 className="text-left py-3 px-2 text-sm font-medium border-b transition-colors duration-200 hover:text-[#00FFFF]"
                 style={{
                   color: link.isPage ? "#00FFFF" : "rgba(240,244,248,0.75)",
@@ -127,7 +137,7 @@ export default function Navbar() {
               </button>
             ))}
             <button
-              onClick={() => scrollTo("#contact")}
+              onClick={() => handleNav("#contact")}
               className="btn-primary text-sm mt-4 text-center"
             >
               Book a Discovery Call
