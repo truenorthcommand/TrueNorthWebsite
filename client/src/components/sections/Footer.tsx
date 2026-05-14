@@ -14,6 +14,8 @@ const NAV_LINKS = [
 export default function Footer() {
   const scrollTo = (href: string) => {
     if (href.startsWith("/")) { window.location.href = href; return; }
+    const isHome = window.location.pathname === "/";
+    if (!isHome) { window.location.href = `/${href}`; return; }
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
