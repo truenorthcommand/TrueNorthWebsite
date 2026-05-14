@@ -2,7 +2,7 @@
  * Chat API Handler
  *
  * Express endpoint for AI SDK streaming chat with tool calling support.
- * Uses patched fetch to fix OpenAI-compatible proxy issues.
+ * Uses OpenAI-compatible API via OpenRouter (or any compatible provider).
  */
 
 import { streamText, stepCountIs } from "ai";
@@ -11,20 +11,22 @@ import { createOpenAI } from "@ai-sdk/openai";
 import type { Express } from "express";
 import { z } from "zod/v4";
 import { ENV } from "./env";
-import { createPatchedFetch } from "./patchedFetch";
 
 /**
- * Creates an OpenAI-compatible provider with patched fetch.
+ * Creates an OpenAI-compatible provider configured for OpenRouter.
  */
 function createLLMProvider() {
-  const baseURL = ENV.forgeApiUrl.endsWith("/v1")
-    ? ENV.forgeApiUrl
-    : `${ENV.forgeApiUrl}/v1`;
+  const baseURL = ENV.openaiApiBase.endsWith("/v1")
+    ? ENV.openaiApiBase
+    : `${ENV.openaiApiBase}`;
 
   return createOpenAI({
     baseURL,
-    apiKey: ENV.forgeApiKey,
-    fetch: createPatchedFetch(fetch),
+    apiKey: ENV.openaiApiKey,
+    headers: {
+      "HTTP-Referer": "https://truenorth.com",
+      "X-Title": "TrueNorth Website",
+    },
   });
 }
 
@@ -102,7 +104,7 @@ export function registerChatRoutes(app: Express) {
       }
 
       const result = streamText({
-        model: openai.chat("gpt-4o"),
+        model: openai.chat(ENV.openaiModel),
         system:
           "You are a helpful assistant. You have access to tools for getting weather and doing calculations. Use them when appropriate.",
         messages,
