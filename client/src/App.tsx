@@ -9,6 +9,8 @@ import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import AdminBlog from "./pages/AdminBlog";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -18,6 +20,8 @@ function Router() {
       <Route path={"/blog"} component={Blog} />
       <Route path={"/blog/:slug"} component={BlogPost} />
       <Route path={"/admin/blog"} component={AdminBlog} />
+      <Route path={"/privacy"} component={Privacy} />
+      <Route path={"/terms"} component={Terms} />
       <Route path={"/404"} component={NotFound} />
       <Route component={NotFound} />
     </Switch>
